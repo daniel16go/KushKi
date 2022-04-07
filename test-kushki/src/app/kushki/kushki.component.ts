@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Kushki } from '@kushki/js';
-import { TokenResponse } from '@kushki/js/lib/types/remote/token_response';
+import { KushkiApiService } from '../kushki-api.service';
 
 
 @Component({
@@ -11,15 +11,17 @@ import { TokenResponse } from '@kushki/js/lib/types/remote/token_response';
 
 export class KushkiComponent implements OnInit {
 
-  cardnumber:string = "5451951574925480";
+  cardnumber:string = "";
   fullname:string = "";
   mm:string = "";
   yy:string = "";
   cvc:string = "";
   mount:number = 0
 
+  private kushki:Kushki;
+
   getToken():void{
-    kushki.requestToken({
+    this.kushki.requestToken({
       amount: this.mount,
       currency: "COP",
       card: {
@@ -31,7 +33,6 @@ export class KushkiComponent implements OnInit {
       },
     }, (response:any) => {
       if(typeof response.code === 'undefined'){
-        console.log("OK-");
         console.log(response);
       } else {
         console.error('Error: ',response.error, 'Code: ', response.code, 'Message: ',response.message);
@@ -39,17 +40,15 @@ export class KushkiComponent implements OnInit {
     });
   }
 
-  checkProperty(object:any, property:any):any{
-    return typeof object !== 'undefined' && object.hasOwnProperty(property);
+  constructor(private kushkiService:KushkiApiService) { 
+    let plublicKey = kushkiService.getPublicKey();
+    this.kushki = new Kushki({
+      merchantId: plublicKey, 
+      inTestEnvironment: true
+    });
   }
-
-  constructor() { }
 
   ngOnInit() {
   }
 
 }
-const kushki = new Kushki({
-  merchantId: 'e48d1ea9047b4ee8a28f3ddcbb76ff50', 
-  inTestEnvironment: true
-});

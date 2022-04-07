@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
+import { KushkiApiService } from './kushki-api.service';
 import { KushkiComponent } from './kushki/kushki.component';
 
 @NgModule({
@@ -14,7 +15,7 @@ import { KushkiComponent } from './kushki/kushki.component';
     BrowserModule,
     FormsModule
   ],
-  providers: [],
+  providers: [KushkiApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
