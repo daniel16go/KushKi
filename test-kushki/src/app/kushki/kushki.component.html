@@ -1,18 +1,30 @@
-<div class="container">
+<div style="align-items: center; width: 400px;" class="container">
   <div class="mb-3">
     <label class="form-label">Valor a pagar</label>
     <input type="number" class="form-control" name="mount" [(ngModel)]="mount">
   </div>
-
+  <br>
+  <br>
+  <br>
   <div class="mb-3">
     <form action="">
-      <input class="form-control" placeholder="Card Number" type="text"name="cardnumber" [(ngModel)]="cardnumber">
+      <input class="form-control" placeholder="Card Number" maxlength="20" (keydown)="cardNumberCheck()" type="text"name="cardnumber" [(ngModel)]="cardnumber">
       <input class="form-control" placeholder="Full Name" type="text" name="fullname" [(ngModel)]="fullname">  
-      <input class="form-control" placeholder="MM" type="text" name="mm" [(ngModel)]="mm">
-      <input class="form-control" placeholder="YY" type="text" name="yy" [(ngModel)]="yy">
+      <input class="form-control" placeholder="MM/YY" maxlength="5" (keydown)="dateCheck()" type="text" name="date" [(ngModel)]="date">
       <input class="form-control" placeholder="CVC" type="password" name="cvc" [(ngModel)]="cvc">
-      <button class="btn btn-primary" id="submit" (click)="getToken()">Pagar ${{mount}}</button>
     </form>
+    
+  </div>
+  <div style="align-items: center;">
+    <button class="btn btn-primary" style="width: 100%;" id="submit" (click)="getToken()">Pagar ${{mount}}</button>
+  </div>
+  <div>
+    <div *ngIf="ok" class="alert alert-success" role="alert">
+      {{message}}
+    </div>
+    <div *ngIf="fail"  class="alert alert-danger" role="alert">
+      {{message}}
+    </div>
   </div>
 </div>
 
