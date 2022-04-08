@@ -20,6 +20,7 @@ export class KushkiComponent implements OnInit {
   ok:boolean = false;
   fail:boolean = false;
 
+  ticket:string = "";
   message:string = "";
 
   private kushki:Kushki;
@@ -27,15 +28,18 @@ export class KushkiComponent implements OnInit {
   getToken():void{
     this.ok = false;
     this.fail = false;
+    var re = /-/g;
+    let card = this.cardnumber.replace(re, "");
+
     this.kushki.requestToken({
       amount: this.mount,
       currency: "COP",
       card: {
         name: this.fullname,
-        number: this.cardnumber,
+        number: card,
         cvc: this.cvc,
         expiryMonth: this.date.split('/')[0],
-        expiryYear: this.date.split('/')[0],
+        expiryYear: this.date.split('/')[1],
       },
     }, (response:any) => {
       if(typeof response.code === 'undefined'){
@@ -47,20 +51,23 @@ export class KushkiComponent implements OnInit {
       }
     });
   }
-  dateCheck(){
-    if(this.date.length >0 && this.date.length < 5){
-      if((this.date.replace("/", "").length)%2 === 0 ){
-        this.date += "/";
+  dateCheck(x:any){
+    if(x.key !== 'Backspace'){
+      if(this.date.length == 2){
+        this.date += '/';
       }
     }
   }
 
-  cardNumberCheck(){
-    if(this.cardnumber.length >0 && this.cardnumber.length <19){
-      let card = this.cardnumber.replace('-', '').length;
-      if(card%4 === 0 ){
-        console.log(card);
-        this.cardnumber += '-';
+  cardNumberCheck(x:any){
+    
+    if(x.key !== 'Backspace'){
+      switch (this.cardnumber.length) {
+        case 4:
+        case 9:
+        case 14:
+          this.cardnumber += '-';
+        break;
       }
     }
   }
@@ -83,11 +90,13 @@ export class KushkiComponent implements OnInit {
     .subscribe((response:any) =>{
       if(typeof response.code === 'undefined'){
         if(typeof response.details.transactionStatus !== 'undefined' && response.details.transactionStatus == "APPROVAL"){
-          this.message = "Ticket num: "+response.ticketNumber+ "\n"+ response.details.responseText;
+          this.message = response.details.responseText;
+          this.ticket = "Ticket num: "+response.ticketNumber; 
           this.ok = true;
+        }else{
+          this.message = response.code+" - "+response.message;
+          this.fail = true;
         }
-
-        
       }else{
         this.message = response.code+" - "+response.message;
         this.fail = true;
@@ -97,6 +106,11 @@ export class KushkiComponent implements OnInit {
 
   constructor(private kushkiService:KushkiApiService) { 
     let plublicKey = kushkiService.publicKey();
+    let min = 1000;
+    let max = 10000000;
+
+    this.mount = Math.trunc(Math.random()*(max - min)-min);
+
     this.kushki = new Kushki({
       merchantId: plublicKey, 
       inTestEnvironment: true

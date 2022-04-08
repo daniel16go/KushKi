@@ -1,30 +1,45 @@
-<div style="align-items: center; width: 400px;" class="container">
-  <div class="mb-3">
-    <label class="form-label">Valor a pagar</label>
-    <input type="number" class="form-control" name="mount" [(ngModel)]="mount">
-  </div>
-  <br>
-  <br>
-  <br>
-  <div class="mb-3">
-    <form action="">
-      <input class="form-control" placeholder="Card Number" maxlength="20" (keydown)="cardNumberCheck()" type="text"name="cardnumber" [(ngModel)]="cardnumber">
-      <input class="form-control" placeholder="Full Name" type="text" name="fullname" [(ngModel)]="fullname">  
-      <input class="form-control" placeholder="MM/YY" maxlength="5" (keydown)="dateCheck()" type="text" name="date" [(ngModel)]="date">
-      <input class="form-control" placeholder="CVC" type="password" name="cvc" [(ngModel)]="cvc">
-    </form>
-    
-  </div>
-  <div style="align-items: center;">
-    <button class="btn btn-primary" style="width: 100%;" id="submit" (click)="getToken()">Pagar ${{mount}}</button>
-  </div>
-  <div>
-    <div *ngIf="ok" class="alert alert-success" role="alert">
+
+<br>
+<div class="container" >
+  <div class="card" *ngIf="ok">
+    <div class="alert alert-success" role="alert">
       {{message}}
     </div>
-    <div *ngIf="fail"  class="alert alert-danger" role="alert">
-      {{message}}
+    <h6>{{ticket}}</h6>
+  </div>
+  <div *ngIf="fail"  class="alert alert-danger" role="alert">
+    {{message}}
+  </div>
+</div>
+<br>
+<div class="card container">
+  <div class="card-body">
+    <form >
+      <div class="mb-3">
+        <label for="cardnumber" class="form-label">Numero de la tarjeta</label>
+        <input type="text" class="form-control" id="cardnumber" placeholder="1111-2222-3333-4444" maxlength="19" (keyup)="cardNumberCheck($event)" name="cardnumber" [(ngModel)]="cardnumber">
+      </div>
+      <div class="mb-3">
+        <label for="fullname" class="form-label">Nombre en tarjeta </label>
+        <input class="form-control" type="text" id="fullname" name="fullname" [(ngModel)]="fullname">
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <label for="fullname" class="form-label">Fecha Exp</label>
+          <input class="form-control" placeholder="MM/YY" maxlength="5" (keydown)="dateCheck($event)" type="text" name="date" [(ngModel)]="date">
+        </div>
+        <div class="col-md-4">
+          <label for="cvc" class="form-label">CVC</label>
+          <input class="form-control" placeholder="cvc" maxlength="3" type="password" name="cvc" [(ngModel)]="cvc">
+        </div>
+      </div>
+    </form>
+    <br>
+    <br>
+    <div style="align-items: center;">
+      <button class="btn btn-primary" style="width: 100%;" id="submit" (click)="getToken()">Pagar ${{mount}}</button>
     </div>
   </div>
 </div>
+
 
